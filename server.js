@@ -35,6 +35,16 @@ app.get('/alerts/:filename', (req, res) => {
     res.status(404).send('❌ Fichier non trouvé');
   }
 });
+app.get('/alerts', (req, res) => {
+  fs.readdir(__dirname, (err, files) => {
+    if (err) {
+      return res.status(500).send('❌ Erreur de lecture des fichiers');
+    }
+
+    const alertFiles = files.filter(file => file.startsWith('alert-') && file.endsWith('.json'));
+    res.json(alertFiles);
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`🚀 Serveur en écoute sur http://localhost:${PORT}`);
