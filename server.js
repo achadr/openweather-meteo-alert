@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +22,18 @@ app.post('/weather-alerts', (req, res) => {
 
 app.get('/', (req, res) => {
   res.send('🌍 Webhook météo Render est actif !');
+});
+
+// ✅ Moved above app.listen
+app.get('/alerts/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filepath = path.join(__dirname, filename);
+
+  if (fs.existsSync(filepath)) {
+    res.sendFile(filepath);
+  } else {
+    res.status(404).send('❌ Fichier non trouvé');
+  }
 });
 
 app.listen(PORT, () => {
